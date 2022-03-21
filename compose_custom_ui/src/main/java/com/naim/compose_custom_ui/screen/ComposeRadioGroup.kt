@@ -14,14 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.naim.compose_custom_ui.R
+import com.naim.compose_custom_ui.event.RadioButtonEvent
 import com.naim.compose_custom_ui.model.RadioButtonData
 
 @Composable
 fun ComposeRadioGroup(
     list: List<RadioButtonData>,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     radioButtonColor: Color? = colorResource(id = R.color.purple_500),
-    radioButtonDisableColor: Color? = colorResource(id = R.color.disable_color)
-
+    radioButtonDisableColor: Color? = colorResource(id = R.color.disable_color),
+    onRadioButtonEvent: (RadioButtonEvent) -> Unit
 ) {
     val selectedRadioButton = remember { mutableStateOf(list.first()) }
     val rbTextColor = radioButtonColor ?: colorResource(id = R.color.purple_500)
@@ -31,9 +33,10 @@ fun ComposeRadioGroup(
         unselectedColor = rbTextColor,
         disabledColor = rbDisableColor
     )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxHeight()
+        modifier = modifier
     ) {
         list.forEachIndexed { index, radioButtonData ->
             val enable = radioButtonData.isEnable ?: true
@@ -42,7 +45,14 @@ fun ComposeRadioGroup(
                     modifier = Modifier
                         .size(24.dp),
                     selected = index == list.indexOf(selectedRadioButton.value),
-                    onClick = { selectedRadioButton.value = radioButtonData },
+                    onClick = {
+                        selectedRadioButton.value = radioButtonData
+                        onRadioButtonEvent.invoke(
+                            RadioButtonEvent.onRadioButtonSelected(
+                                radioButtonData
+                            )
+                        )
+                    },
                     colors = colors,
                     enabled = enable
                 )

@@ -3,12 +3,16 @@ package com.naim.androidcomposecustomuiexample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.naim.androidcomposecustomuiexample.ui.theme.AndroidComposeCustomUIExampleTheme
-import com.naim.compose_custom_ui.model.RadioButtonData
-import com.naim.compose_custom_ui.screen.ComposeRadioGroup
+import com.naim.compose_custom_ui.event.SpinnerEvent
+import com.naim.compose_custom_ui.model.SpinnerData
+import com.naim.compose_custom_ui.screen.ComposeSpinner
+import com.naim.compose_custom_ui.style.ComposeSpinnerItemStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +63,36 @@ class MainActivity : ComponentActivity() {
 //                }
 //            }
 
+//            val list = listOf(
+//                RadioButtonData(title = "Bangladesh"),
+//                RadioButtonData(title = "India"),
+//                RadioButtonData(title = "Malaysia", isEnable = false),
+//                RadioButtonData(title = "Australia"),
+//            )
+//            ComposeRadioGroup(list = list){
+//
+//            }
+
             val list = listOf(
-                RadioButtonData(title = "Bangladesh"),
-                RadioButtonData(title = "India"),
-                RadioButtonData(title = "Malaysia")
+                SpinnerData(title = "Bangladesh"),
+                SpinnerData(title = "India"),
+                SpinnerData(title = "Malaysia"),
+                SpinnerData(title = "Australia"),
             )
-            ComposeRadioGroup(list = list)
+            ComposeSpinner(
+                itemList = list,
+                itemStyle = ComposeSpinnerItemStyle().apply {
+                    modifier = Modifier.fillMaxWidth()
+                }) {
+                when (it) {
+                    is SpinnerEvent.onComposeSpinnerNothingSelected -> {
+                        println("Spinner nothing selected")
+                    }
+                    is SpinnerEvent.onComposeSpinnerItemSelected -> {
+                        println("Spinner ${it.position} selected")
+                    }
+                }
+            }
         }
     }
 }
